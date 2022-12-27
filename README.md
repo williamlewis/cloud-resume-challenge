@@ -6,15 +6,15 @@ Repo to track progress and document the outcome of my Cloud Resume Challenge pro
 
 - [x]  1. Earn an **AWS Certification**
 
-- [ ]  2. Write Resume in **HTML**
+- [x]  2. Write Resume in **HTML**
 
-- [ ]  3. Style Resume in **CSS**
+- [x]  3. Style Resume in **CSS**
 
-- [ ]  4. Deploy Resume to Static Website with **AWS S3**
+- [x]  4. Deploy Resume to Static Website with **AWS S3**
 
-- [ ]  5. Use HTTPS Protocol with **AWS CloudFront**
+- [x]  5. Use HTTPS Protocol with **AWS CloudFront**
 
-- [ ]  6. Point Custom DNS Domain Name with **AWS Route 53**
+- [x]  6. Point Custom DNS Domain Name with **AWS Route 53**
 
 - [ ]  7. Create a Webpage Visitor Counter with **Javascript**
 
