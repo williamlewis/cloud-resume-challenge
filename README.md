@@ -5,16 +5,29 @@ Repo to track progress and document the outcome of my Cloud Resume Challenge pro
 ## Challenge Steps & Progress:
 
 - [x]  1. Earn an **AWS Certification**
+    - passed CCP in September, the CSA Associate in October
 
 - [x]  2. Write Resume in **HTML**
+    - utilized Bootstrap framework for general organization & positioning
+    - recreated a sample from scratch (instead of a downloaded template)
 
 - [x]  3. Style Resume in **CSS**
+    - used selective overrides on top of Bootstrap framework
 
 - [x]  4. Deploy Resume to Static Website with **AWS S3**
+    - utilized OAC origin access control to improve security by restricting access to CloudFront distribution
+    - left public access blocked & static website feature disabled for compatibility with OAC
 
 - [x]  5. Use HTTPS Protocol with **AWS CloudFront**
+    - redirects any HTTP requests to HTTPS
+    - IPv6 enabled in addition to IPv4
+    - SSL certificate validated for root domain and `*.` subdomains
 
 - [x]  6. Point Custom DNS Domain Name with **AWS Route 53**
+    - custom domain purchased through **Cloudflare** (not Route 53)
+    - validation CNAME records needed in Cloudflare DNS settings
+    - CNAME / A / AAAA alias records not needed in Route 53 for successful DNS resolution
+    - website successfully loads from multiple browsers, with & without `www.` subdomain
 
 - [ ]  7. Create a Webpage Visitor Counter with **Javascript**
 
