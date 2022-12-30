@@ -108,6 +108,19 @@ ul{
     border-width: 1px;
 }
 
+.view-counter {
+    text-align: center;
+    font-size: 15px !important;
+    /* font-weight: bold; */
+    font-style: italic;
+    color:rgb(125, 125, 125);
+    background-color: rgb(235, 235, 235);
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-top: 12px;
+    padding-bottom: 0px;
+}
+
 
 
 /*
