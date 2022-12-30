@@ -1,6 +1,5 @@
 h1 {
     font-family: 'Open Sans';
-    /* font-family: 'ButlerRegular'; */
     font-size: 44px !important;
     font-weight: bold;
 }
@@ -8,13 +7,11 @@ h1 {
 h2 {
     font-family: 'Open Sans';
     font-size: 20px !important;
-    /* text-transform: uppercase; */
     overflow-wrap: break-word;
 }
 
 h3 {
     font-family: 'Open Sans';
-    /* font-family: 'ButlerRegular'; */
     text-transform: uppercase;
     font-size: 15px !important;
     font-weight: bold;
@@ -27,13 +24,11 @@ h3 {
 }
 
 h4 {
-    /* company */
     font-family: 'Open Sans';
     font-size: 15px !important;
 }
 
 h5 {
-    /* experience / project subheader */
     font-family: 'Open Sans';
     font-size: 11px !important;
     font-weight: bold;
@@ -58,14 +53,6 @@ ul{
 
 
 .contact-info {
-    /* display: flex; 
-    vertical-align: center;
-    justify-content: center;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;*/
-
     font-family: 'Open Sans';
     font-size: 12px;
 
@@ -83,15 +70,8 @@ ul{
 }
 
 .bullet-small {
-    /* color:rgb(186, 234, 255); */
     font-size: 12px;
     font-weight: 400;
-
-    /* margin: 0;
-    position: absolute;
-    top: 50%;
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%); */
 }
 
 .footer {
@@ -111,7 +91,6 @@ ul{
 .view-counter {
     text-align: center;
     font-size: 15px !important;
-    /* font-weight: bold; */
     font-style: italic;
     color:rgb(125, 125, 125);
     background-color: rgb(235, 235, 235);
@@ -120,28 +99,3 @@ ul{
     padding-top: 12px;
     padding-bottom: 0px;
 }
-
-
-
-/*
-.work-col-dot {
-    height: 15px;
-    width: 15px;
-    background-color: rgb(186, 234, 255);
-    border-radius: 50%;
-    display: inline-block;
-
-} */
-
-/*
-.section-corner-dot::before {
-    content: '\f111';
-    font-family: 'Open Sans';
-    position: absolute;
-    
-
-    left: calc(30%);
-
-    color: rgb(186, 234, 255);
-    padding-bottom: 10px;
-}*/
