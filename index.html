@@ -277,6 +277,30 @@
         </p>
       </div>
 
+      <div class="row view-counter">
+          <!-- <p>Web Page Views:  </p>
+          <p id="displayed-count"></p> -->
+
+        <p id="displayedCount"></p>
+
+        <script>
+            const api_url = 'https://gqzq4elpqa.execute-api.us-east-1.amazonaws.com/Production/count'
+
+            fetch(api_url, {
+                method: 'POST'
+            })
+                .then((response) => response.json())
+                // .then(data => console.log(data));
+                .then((data) => {document.getElementById('displayedCount').innerHTML = 'Total Page Views:  ' + data['total_views']});
+                // const new_count = document.getElementById('displayed-count');
+                // new_count.innerHTML = 'Web Page Views:  ' + data;
+                // .then((data) => {document.getElementById('returned-count').innerHTML = data console.log(data)});
+            
+
+        </script>
+
+      </div>
+
     </div>
 
   </body>
