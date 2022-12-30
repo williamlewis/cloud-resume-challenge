@@ -29,13 +29,21 @@ Repo to track progress and document the outcome of my Cloud Resume Challenge pro
     - CNAME / A / AAAA alias records not needed in Route 53 for successful DNS resolution
     - website successfully loads from multiple browsers, with & without `www.` subdomain
 
-- [ ]  7. Create a Webpage Visitor Counter with **Javascript**
+- [x]  7. Create a Webpage Visitor Counter with **Javascript**
+    - POST request sent to Lambda funcion using Fetch API
+    - latest number of page views displayed to visitor at page bottom
 
-- [ ]  8. Create a Visitor Counter Database with **AWS DynamoDB**
+- [x]  8. Create a Visitor Counter Database with **AWS DynamoDB**
+    - noSQL database holds single record with single attribute which is updated by Lambda function
 
-- [ ]  9. Connect Webpage to Database with **AWS API Gateway + Lambda**
+- [x]  9. Connect Webpage to Database with **AWS API Gateway + Lambda**
+    - REST API exposes URL endpoint, allowing for GET and POST requests
+    - API call invokes Lambda function, relaying function return value as API response to website
 
-- [ ] 10. Write a Lambda Function with **Python + AWS Boto3 SDK**
+- [x] 10. Write a Lambda Function with **Python + AWS Boto3 SDK**
+    - Boto3 SDK manages DynamoDB table, retrieving and updating value of view count record
+    - function checks latest count from table, increments +1, and persists new value back to table
+    - function returns JSON response to API, to deliver JSON resposne back to website
 
 - [ ] 11. Perform **Tests** on Python Code
 
