@@ -20,52 +20,82 @@ def use_moto():
             TableName = table_name,
             KeySchema = [
                 {
-                    'AttributeName': 'date',
+                    'AttributeName': 'count_id',
                     'KeyType': 'HASH'
                 }
             ],
             AttributeDefinitions = [
                 {
-                    'AttributeName': 'date',
+                    'AttributeName': 'count_id',
                     'AttributeType': 'S'
-                }
+                },
+                # {
+                #     'AttributeName': 'current_count',
+                #     'AttributeType': 'N'
+                # }
             ],
             BillingMode='PAY_PER_REQUEST'
         )
         return dynamodb_mocked # return the full mocked resource, with a mocked table within
     return dynamodb_resource
 
+@pytest.fixture
+def use_sample_data():
+    sample_data = {
+        'count_id': 'total_views',
+        'current_count': 1
+    }
+    return sample_data
+
 
 
 @mock_dynamodb
-def test_write_into_table(use_moto):
-    # from lambda_update_view_count_in_dynamodb import lambda_handler
+def test_write_into_table(use_moto, use_sample_data):
     use_moto()
 
     table = boto3.resource('dynamodb', region_name='us-east-1').Table(table_name)
 
-    data = {
-        'date': '06-Nov-2020',
-        'field2': 'value2',
-        'field3': 'value3'
-    }
+    table.put_item(Item=use_sample_data)
 
-    table.put_item(Item=data)
-
-    resp = table.get_item(Key={'date': '06-Nov-2020'})
+    resp = table.get_item(Key={'count_id': 'total_views'})
     actual_output = resp['Item']
 
     print('\n')
-    print(data)
+    print(use_sample_data)
     print('----')
     print(actual_output)
-    assert actual_output == data
+    assert actual_output == use_sample_data
 
 
+@mock_dynamodb
+def test_total_count_can_be_incremented(use_moto, use_sample_data):
+    use_moto()
+
+    table = boto3.resource('dynamodb', region_name='us-east-1').Table(table_name)
+
+    table.put_item(Item=use_sample_data)
+
+    resp = table.get_item(Key={'count_id': 'total_views'})
+    old_count = resp['Item']['current_count']
+    new_count = old_count + 1
+
+    print('\n')
+    print(old_count)
+    print('----')
+    print(new_count)
+    assert new_count > old_count
 
 
+@mock_dynamodb
+def test_lambda_func_can_increment_on_mock_db(use_moto, use_sample_data):
+    use_moto()
+    table = boto3.resource('dynamodb', region_name='us-east-1').Table(table_name)
+    table.put_item(Item=use_sample_data)
 
+    from lambda_update_view_count_in_dynamodb import lambda_handler
+    response = lambda_handler(None, None)
 
+    assert response != None
 
 
 
