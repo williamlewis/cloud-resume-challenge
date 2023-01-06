@@ -3,12 +3,15 @@
 
 import boto3
 import json
+import os
 
 dynamodb = boto3.resource('dynamodb')
 
+# table name is stored as an environmental variable to differentiate during production vs. testing
+table_name = os.environ['TABLE_NAME']
+
 def lambda_handler(event, context):
 
-    table_name = 'view-counter-cloud-resume-challenge'
     table = dynamodb.Table(table_name)
 
     # get current view count value from DB
