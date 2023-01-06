@@ -144,11 +144,21 @@ def test_lambda_response_is_single_key_val_pair(use_moto, use_sample_data):
     assert type(body['total_views']) == str # value is receivced as string format
     assert int(body['total_views']) # value is a number (i.e. can be converted to integer successfully)
 
-
 @mock_dynamodb
 def test_lambda_increments_value_and_saves_to_db(use_moto, use_sample_data):
-    pass
+    use_moto()
+    table = boto3.resource('dynamodb', region_name='us-east-1').Table(table_name)
+    table.put_item(Item=use_sample_data)
 
+    from lambda_update_view_count_in_dynamodb import lambda_handler
+    response_1 = lambda_handler(None, None)
+    count_1 = int(json.loads(response_1['body'])['total_views'])
+
+    response_2 = lambda_handler(None, None)
+    count_2 = int(json.loads(response_2['body'])['total_views'])
+
+    assert count_2 > count_1 # lambda function increments count & successfully saves back to table (since received on second call)
+    assert (count_2 - count_1) == 1 # lambda function increments count by one
 
 
 
