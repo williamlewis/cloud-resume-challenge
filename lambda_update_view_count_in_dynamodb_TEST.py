@@ -7,77 +7,42 @@ import pytest
 import json
 from moto import mock_dynamodb
 
-'''
-# Set up mock table as a fixture, to use in tests
+
 @pytest.fixture
-def use_mock_db():
+def use_moto():
     @mock_dynamodb
     def dynamodb_resource():
-        dynamodb_resource = boto3.resource('dynamodb', region_name='us-east-1')
-
-        # Create a table
-        dynamodb_resource.create_table(
-            TableName=table_name,
-            KeySchema=[
+        # from lambda_update_view_count_in_dynamodb import lambda_handler
+        dynamodb_mocked = boto3.resource('dynamodb')
+        
+        #table_name = os.environ['TABLE_NAME']
+        table = dynamodb_mocked.create_table(
+            TableName = table_name,
+            KeySchema = [
                 {
-                    'AttributeName': 'RecordId',
+                    'AttributeName': 'date',
                     'KeyType': 'HASH'
-                },
-                {
-                    'AttributeName': 'RecordType',
-                    'KeyType': 'RANGE'
-                },
+                }
             ],
-            AttributeDefinitions=[
+            AttributeDefinitions = [
                 {
-                    'AttributeName': 'RecordId',
+                    'AttributeName': 'date',
                     'AttributeType': 'S'
-                },
-                {
-                    'AttributeName': 'RecordType',
-                    'AttributeType': 'S'
-                },
+                }
             ],
             BillingMode='PAY_PER_REQUEST'
         )
-        return dynamodb_resource
+        return dynamodb_mocked # return the full mocked resource, with a mocked table within
     return dynamodb_resource
 
-# Create test, using fixture argument to operate off of mock db
-@mock_dynamodb
-def test_something():
-    return 'something'
-'''
-
-
-
-
-
 
 
 @mock_dynamodb
-def test_write_into_table():
+def test_write_into_table(use_moto):
     # from lambda_update_view_count_in_dynamodb import lambda_handler
-    dynamodb_mocked = boto3.resource('dynamodb')
-    
-    
-    table_name = os.environ['TABLE_NAME']
-    table = dynamodb_mocked.create_table(
-        TableName = table_name,
-        KeySchema = [
-            {
-                'AttributeName': 'date',
-                'KeyType': 'HASH'
-            }
-        ],
-        AttributeDefinitions = [
-            {
-                'AttributeName': 'date',
-                'AttributeType': 'S'
-            }
-        ],
-        BillingMode='PAY_PER_REQUEST'
-    )
+    use_moto()
+
+    table = boto3.resource('dynamodb', region_name='us-east-1').Table(table_name)
 
     data = {
         'date': '06-Nov-2020',
@@ -90,7 +55,7 @@ def test_write_into_table():
     resp = table.get_item(Key={'date': '06-Nov-2020'})
     actual_output = resp['Item']
 
-
+    print('\n')
     print(data)
     print('----')
     print(actual_output)
@@ -162,50 +127,6 @@ def test_write_into_table():
     # patch_resource(dynamodb_mocked)
     
     
-    
-    
-    
-    
-    table_name = os.environ['TABLE_NAME']
-    table = dynamodb_mocked.create_table(
-        TableName = table_name,
-        KeySchema = [{
-            'AttributeName': 'date',
-            'KeyType': 'HASH'
-        }],
-        AttributeDefinitions = [{
-            'AttributeName': 'date',
-            'AttributeType': 'S'
-        }]
-    )
-
-    data = {
-        'date': '06-Nov-2020',
-        'field2': 'value2',
-        'field3': 'value3'
-    }
-
-    table.put_item(Item=data)
-
-    resp = table.get_item(Key={'date': '06-Nov-2020'})
-    actual_output = resp['Item']
-
-
-    print(data)
-    print('----')
-    print(actual_output)
-    assert actual_output == data
-
-
-
-
-
-
-
-
-
-
-
 
 
 
