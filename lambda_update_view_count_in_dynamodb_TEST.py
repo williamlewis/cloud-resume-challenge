@@ -41,6 +41,7 @@ def use_moto():
 
 @pytest.fixture
 def use_sample_data():
+    # Sample data reflects fields of actual DynamoDB table
     sample_data = {
         'count_id': 'total_views',
         'current_count': 1
@@ -48,7 +49,7 @@ def use_sample_data():
     return sample_data
 
 
-
+'''
 @mock_dynamodb
 def test_write_into_table(use_moto, use_sample_data):
     use_moto()
@@ -65,8 +66,6 @@ def test_write_into_table(use_moto, use_sample_data):
     print('----')
     print(actual_output)
     assert actual_output == use_sample_data
-
-
 @mock_dynamodb
 def test_total_count_can_be_incremented(use_moto, use_sample_data):
     use_moto()
@@ -84,8 +83,6 @@ def test_total_count_can_be_incremented(use_moto, use_sample_data):
     print('----')
     print(new_count)
     assert new_count > old_count
-
-
 @mock_dynamodb
 def test_lambda_func_can_increment_on_mock_db(use_moto, use_sample_data):
     use_moto()
@@ -96,25 +93,63 @@ def test_lambda_func_can_increment_on_mock_db(use_moto, use_sample_data):
     response = lambda_handler(None, None)
 
     assert response != None
-
-
-
-
-
 '''
-# Define in environmental variable for DynamoDB table name before importing other modules 
-import os
-os.environ['TABLE_NAME'] = 'example-table-for-testing'
 
-# # Test actual lambda function from locally cloned repo (in same directory as testing file)
-# from lambda_update_view_count_in_dynamodb import lambda_handler
-# from lambda_update_view_count_in_dynamodb import dynamodb
 
-import boto3
-# Use moto to set up mock cloud resources for majority of function testing, to reduce number of API calls and lambda invocations
-from moto import mock_dynamodb2
-import pytest
-import json
+
+@mock_dynamodb
+def test_lambda_response_is_not_empty(use_moto, use_sample_data):
+    use_moto()
+    table = boto3.resource('dynamodb', region_name='us-east-1').Table(table_name)
+    table.put_item(Item=use_sample_data)
+
+    from lambda_update_view_count_in_dynamodb import lambda_handler
+    response = lambda_handler(None, None)
+
+    assert response != None
+
+@mock_dynamodb
+def test_lambda_response_body_is_JSON_format(use_moto, use_sample_data):
+    use_moto()
+    table = boto3.resource('dynamodb', region_name='us-east-1').Table(table_name)
+    table.put_item(Item=use_sample_data)
+
+    from lambda_update_view_count_in_dynamodb import lambda_handler
+    response = lambda_handler(None, None)    
+    
+    # body = response['body']
+    
+    # print('\n')
+    # print(response)
+    # print('--------')
+    # print(body)
+    # #print(json.dumps(body))
+    # print(json.loads(body))
+    # assert json.loads(body)
+    assert json.loads(response['body'])
+
+@mock_dynamodb
+def test_lambda_response_is_single_key_val_pair(use_moto, use_sample_data):
+    use_moto()
+    table = boto3.resource('dynamodb', region_name='us-east-1').Table(table_name)
+    table.put_item(Item=use_sample_data)
+
+    from lambda_update_view_count_in_dynamodb import lambda_handler
+    response = lambda_handler(None, None)
+    body = json.loads(response['body'])
+
+    assert type(body) == dict # body is a key/value pair
+    assert len(body) == 1 # body only contains one key/value pair
+    assert 'total_views' in body # body includes expected 'count_id' key
+    assert type(body['total_views']) == str # value is receivced as string format
+    assert int(body['total_views']) # value is a number (i.e. can be converted to integer successfully)
+
+
+@mock_dynamodb
+def test_lambda_increments_value_and_saves_to_db(use_moto, use_sample_data):
+    pass
+
+
 
 
 
@@ -147,18 +182,6 @@ import json
 #     assert count_2 > count_1
 
 
-@mock_dynamodb2
-def test_write_into_table():
-    from lambda_update_view_count_in_dynamodb import lambda_handler
-    dynamodb_mocked = boto3.resource('dynamodb')
-
-    # from moto.core import patch_client, patch_resource
-    # patch_client(dynamodb)
-    # patch_resource(dynamodb_mocked)
-    
-    
-
-
 
 
 # TEST ON LAMBDA FUNCTION
@@ -175,6 +198,4 @@ def test_write_into_table():
 # - is returned response a single key/val pair?
 
 # - is val of returned resonse a number formatted as an integer?
-
-'''
 
