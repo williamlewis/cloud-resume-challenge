@@ -5,9 +5,10 @@ os.environ['TABLE_NAME'] = table_name
 import boto3
 import pytest
 import json
+import requests
 from moto import mock_dynamodb
 
-
+# Create fixtures to use in tests
 @pytest.fixture
 def use_moto():
     @mock_dynamodb
@@ -49,54 +50,8 @@ def use_sample_data():
     return sample_data
 
 
-'''
-@mock_dynamodb
-def test_write_into_table(use_moto, use_sample_data):
-    use_moto()
 
-    table = boto3.resource('dynamodb', region_name='us-east-1').Table(table_name)
-
-    table.put_item(Item=use_sample_data)
-
-    resp = table.get_item(Key={'count_id': 'total_views'})
-    actual_output = resp['Item']
-
-    print('\n')
-    print(use_sample_data)
-    print('----')
-    print(actual_output)
-    assert actual_output == use_sample_data
-@mock_dynamodb
-def test_total_count_can_be_incremented(use_moto, use_sample_data):
-    use_moto()
-
-    table = boto3.resource('dynamodb', region_name='us-east-1').Table(table_name)
-
-    table.put_item(Item=use_sample_data)
-
-    resp = table.get_item(Key={'count_id': 'total_views'})
-    old_count = resp['Item']['current_count']
-    new_count = old_count + 1
-
-    print('\n')
-    print(old_count)
-    print('----')
-    print(new_count)
-    assert new_count > old_count
-@mock_dynamodb
-def test_lambda_func_can_increment_on_mock_db(use_moto, use_sample_data):
-    use_moto()
-    table = boto3.resource('dynamodb', region_name='us-east-1').Table(table_name)
-    table.put_item(Item=use_sample_data)
-
-    from lambda_update_view_count_in_dynamodb import lambda_handler
-    response = lambda_handler(None, None)
-
-    assert response != None
-'''
-
-
-
+# Test lambda function (locally imported) on mock database to validate outputs
 @mock_dynamodb
 def test_lambda_response_is_not_empty(use_moto, use_sample_data):
     use_moto()
@@ -162,50 +117,14 @@ def test_lambda_increments_value_and_saves_to_db(use_moto, use_sample_data):
 
 
 
+# Test actual API endpoint URL to validate live response and status
 
-################################
-##  SET UP CONTEXT FOR TESTS  ##
-################################
-
-# @pytest.fixture
-# def call_1():
-#     return lambda_handler(None, None)
-
-# @pytest.fixture
-# def call_2():
-#     return lambda_handler(None, None)
-
-
-
-######################
-##  TEST FUNCTIONS  ##
-######################
-
-
-# def test_lambda_response_is_not_empty(call_1):
-#     assert call_1 != None
-
-# def test_lambda_increments_view_count(call_1, call_2):
-#     count_1 = json.loads(call_1['body'])['total_views']
-#     count_2 = json.loads(call_2['body'])['total_views']    
-        
-#     assert count_2 > count_1
-
-
-
-
-# TEST ON LAMBDA FUNCTION
-# / does function get item from DB?
-
-# / does function write item back to DB?
-
-# / is written item larger than original item?
-
-
-# # TEST ON API ENDPOINT
-# - is returned function response in a JSON format?
-
-# - is returned response a single key/val pair?
-
-# - is val of returned resonse a number formatted as an integer?
-
+def test_api_response_not_empty_and_correct_status_code():
+    response = requests.post('https://gqzq4elpqa.execute-api.us-east-1.amazonaws.com/Production/count')
+    
+    assert response != None # response is not empty
+    assert response.status_code == 200 # status code is 200
+    assert len(json.loads(response.text)) == 1 # response is JSON format & only contains one key/value pair
+    assert 'total_views' in json.loads(response.text) # response contains expected key/value pair
+    assert type(json.loads(response.text)['total_views']) == str # returned value is a string format
+    assert int(json.loads(response.text)['total_views']) # returned string value is a number (i.e. can be converted to an integer successfully)
