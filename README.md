@@ -45,7 +45,11 @@ Repo to track progress and document the outcome of my Cloud Resume Challenge pro
     - function checks latest count from table, increments +1, and persists new value back to table
     - function returns JSON response to API, to deliver JSON resposne back to website
 
-- [ ] 11. Perform **Tests** on Python Code
+- [x] 11. Perform **Tests** on Python Code
+    - tests run on pytest framework, with lambda function imported locally to be tested
+    - moto package used to mock DynamoDB resources
+    - os module used to pass environmental variables to utilize mock resources
+    - requests module used to make calls to API URL endpoint 
 
 - [ ] 12. Configure Resources with **IaC Using an AWS SAM Template**
 
