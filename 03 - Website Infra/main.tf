@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "aws" {
-    region = "us-east-1"
+  region = "us-east-1"
 }
 
 # --------------------------------------
@@ -16,36 +16,46 @@ provider "aws" {
 # --------------------------------------
 
 # Table
-resource "aws_dynamodb_table" "" {
-    #
-}
+resource "aws_dynamodb_table" "view-count-table" {
+  name           = "view-count-table"
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 20
+  write_capacity = 20
+  hash_key       = "count_id" # Partition key
 
-# Table Item
-resource "aws_dynamodb_table_item" "" {
-    #
-}
-
-
-# ------------------------------------
-# ////////       Lambda       ////////
-# ------------------------------------
-
-# Function
-resource "aws_lambda_function" "" {
-    #
-}
-
-# IAM Role for Lambda?
-resource "aws_iam_role" "" {
-    #
+  attribute {
+    name = "count_id"
+    type = "S" # Partition key data type
+  }
 }
 
 
-# -----------------------------------------
-# ////////       API Gateway       ////////
-# -----------------------------------------
+# # Table Item
+# resource "aws_dynamodb_table_item" "" {
+#     #
+# }
 
-# REST API
-resource "aws_api_gateway_rest_api" "" {
-    #
-}
+
+# # ------------------------------------
+# # ////////       Lambda       ////////
+# # ------------------------------------
+
+# # Function
+# resource "aws_lambda_function" "" {
+#     #
+# }
+
+# # IAM Role for Lambda?
+# resource "aws_iam_role" "" {
+#     #
+# }
+
+
+# # -----------------------------------------
+# # ////////       API Gateway       ////////
+# # -----------------------------------------
+
+# # REST API
+# resource "aws_api_gateway_rest_api" "" {
+#     #
+# }
