@@ -30,10 +30,21 @@ resource "aws_dynamodb_table" "view-count-table" {
 }
 
 
-# # Table Item
-# resource "aws_dynamodb_table_item" "" {
-#     #
-# }
+# Table Item
+resource "aws_dynamodb_table_item" "total-views" {
+  depends_on = [
+    aws_dynamodb_table.view-count-table
+  ]
+  table_name = aws_dynamodb_table.view-count-table.name
+  hash_key   = aws_dynamodb_table.view-count-table.hash_key
+
+  item = <<ITEM
+{
+  "count_id": {"S": "total_views"},
+  "current_count": {"N": "1"}
+}
+ITEM
+}
 
 
 # # ------------------------------------
