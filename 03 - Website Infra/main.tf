@@ -60,7 +60,7 @@ ITEM
 # ////////       Lambda       ////////
 # ------------------------------------
 
-# Lambda Execution Role
+# Execution Role
 resource "aws_iam_role" "iam_lambda_role" {
   name = "iam_lambda_role"
 
@@ -81,7 +81,7 @@ resource "aws_iam_role" "iam_lambda_role" {
 EOF
 }
 
-# Role Policy
+# Policy for Execution Role
 resource "aws_iam_role_policy" "lambda_access_to_dynamodb_cloudwatch" {
   name   = "dynamodb_lambda_policy"
   role   = aws_iam_role.iam_lambda_role.id
@@ -109,8 +109,8 @@ EOF
 # }
 
 # Function
-resource "aws_lambda_function" "lambda-tf-test-function" {
-  function_name = "lambda-tf-test-function"
+resource "aws_lambda_function" "lambda-view-counter-function" {
+  function_name = "lambda-view-counter-function"
 
   filename         = data.archive_file.zip.output_path #"update_view_count.zip"
   source_code_hash = data.archive_file.zip.output_base64sha256
@@ -131,7 +131,83 @@ resource "aws_lambda_function" "lambda-tf-test-function" {
 # # ////////       API Gateway       ////////
 # # -----------------------------------------
 
-# # REST API
-# resource "aws_api_gateway_rest_api" "" {
-#     #
-# }
+# REST API
+resource "aws_api_gateway_rest_api" "api-to-lambda-view-count" {
+  name        = "api-to-lambda-view-count"
+  description = "Gateway -> Lambda -> DynamoDB"
+
+  endpoint_configuration {
+    types = ["REGIONAL"]
+  }
+}
+
+# API Resource (path end for URL)
+resource "aws_api_gateway_resource" "api-resource" {
+  parent_id   = aws_api_gateway_rest_api.api-to-lambda-view-count.root_resource_id
+  path_part   = "count"
+  rest_api_id = aws_api_gateway_rest_api.api-to-lambda-view-count.id
+}
+
+# Request Method
+resource "aws_api_gateway_method" "api-post-method" {
+  authorization = "NONE"
+  http_method   = "POST"
+  resource_id   = aws_api_gateway_resource.api-resource.id
+  rest_api_id   = aws_api_gateway_rest_api.api-to-lambda-view-count.id
+}
+
+# Integration (link to Lambda function)
+resource "aws_api_gateway_integration" "api-lambda-integration" {
+  rest_api_id             = aws_api_gateway_rest_api.api-to-lambda-view-count.id
+  resource_id             = aws_api_gateway_resource.api-resource.id
+  http_method             = aws_api_gateway_method.api-post-method.http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.lambda-view-counter-function.invoke_arn
+}
+
+# Deployment (to stage for use)
+resource "aws_api_gateway_deployment" "api-deployment" {
+  rest_api_id = aws_api_gateway_rest_api.api-to-lambda-view-count.id
+
+  triggers = {
+    # NOTE: The configuration below will satisfy ordering considerations,
+    #       but not pick up all future REST API changes. More advanced patterns
+    #       are possible, such as using the filesha1() function against the
+    #       Terraform configuration file(s) or removing the .id references to
+    #       calculate a hash against whole resources. Be aware that using whole
+    #       resources will show a difference after the initial implementation.
+    #       It will stabilize to only change when resources change afterwards.
+    redeployment = sha1(jsonencode([
+      aws_api_gateway_resource.api-resource.id,
+      aws_api_gateway_method.api-post-method.id,
+      aws_api_gateway_integration.api-lambda-integration.id,
+    ]))
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+# Stage
+resource "aws_api_gateway_stage" "api-stage" {
+  deployment_id = aws_api_gateway_deployment.api-deployment.id
+  rest_api_id   = aws_api_gateway_rest_api.api-to-lambda-view-count.id
+  stage_name    = "prod"
+}
+
+
+# Permission (from Lambda to API)
+resource "aws_lambda_permission" "lambda-permission-to-api" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = "lambda-view-counter-function"
+  principal     = "apigateway.amazonaws.com"
+
+  # The /*/*/* part allows invocation from any stage, method and resource path
+  # within API Gateway REST API.
+  source_arn = "${aws_api_gateway_rest_api.api-to-lambda-view-count.execution_arn}/*/*/*"
+  # source_arn = "${aws_api_gateway_rest_api.api-to-lambda-view-count.execution_arn}/prod/POST/count"
+  # source_arn = "${aws_api_gateway_rest_api.api-to-lambda-view-count.execution_arn}/${aws_api_gateway_stage.api-stage.stage_name}/${aws_api_gateway_method.api-post-method.http_method}/${aws_api_gateway_resource.api-resource.path_part}"
+}
