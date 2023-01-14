@@ -211,3 +211,58 @@ resource "aws_lambda_permission" "lambda-permission-to-api" {
   # source_arn = "${aws_api_gateway_rest_api.api-to-lambda-view-count.execution_arn}/prod/POST/count"
   # source_arn = "${aws_api_gateway_rest_api.api-to-lambda-view-count.execution_arn}/${aws_api_gateway_stage.api-stage.stage_name}/${aws_api_gateway_method.api-post-method.http_method}/${aws_api_gateway_resource.api-resource.path_part}"
 }
+
+
+# # --------------------------------------------------------------
+# # ////////       Enable CORS (API Gateway Cont'd)       ////////
+# # --------------------------------------------------------------
+
+# CORS-Enabling Method
+resource "aws_api_gateway_method" "api-cors-method" {
+  rest_api_id      = aws_api_gateway_rest_api.api-to-lambda-view-count.id
+  resource_id      = aws_api_gateway_resource.api-resource.id
+  http_method      = "OPTIONS"
+  authorization    = "NONE"
+  api_key_required = false
+}
+
+# CORS-Enabling Method Response
+resource "aws_api_gateway_method_response" "api-cors-method-response" {
+  rest_api_id = aws_api_gateway_rest_api.api-to-lambda-view-count.id
+  resource_id = aws_api_gateway_resource.api-resource.id
+  http_method = aws_api_gateway_method.api-cors-method.http_method
+  status_code = "200"
+  response_models = {
+    "application/json" = "Empty"
+  }
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = true
+    "method.response.header.Access-Control-Allow-Methods" = true
+    "method.response.header.Access-Control-Allow-Origin"  = true
+  }
+}
+
+# CORS-Enabling Integration
+resource "aws_api_gateway_integration" "api-cors-integration" {
+  rest_api_id          = aws_api_gateway_rest_api.api-to-lambda-view-count.id
+  resource_id          = aws_api_gateway_resource.api-resource.id
+  http_method          = "OPTIONS"
+  type                 = "MOCK"
+  passthrough_behavior = "WHEN_NO_MATCH"
+  request_templates = {
+    "application/json" : "{\"statusCode\": 200}"
+  }
+}
+
+# CORS-Enabling Integration Response
+resource "aws_api_gateway_integration_response" "options" {
+  rest_api_id = aws_api_gateway_rest_api.api-to-lambda-view-count.id
+  resource_id = aws_api_gateway_resource.api-resource.id
+  http_method = aws_api_gateway_integration.api-cors-integration.http_method
+  status_code = "200"
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+    "method.response.header.Access-Control-Allow-Methods" = "'POST,OPTIONS'"
+    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+  }
+}
