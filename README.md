@@ -5,7 +5,7 @@ Repo to track progress and document the outcome of my Cloud Resume Challenge pro
 ## Challenge Steps & Progress:
 
 - [x]  1. Earn an **AWS Certification**
-    - passed CCP in September, the CSA Associate in October
+    - passed Cloud Practitioner in September 2022, the Solutions Architect Associate in October 2022
 
 - [x]  2. Write Resume in **HTML**
     - utilized Bootstrap framework for general organization & positioning
@@ -15,7 +15,7 @@ Repo to track progress and document the outcome of my Cloud Resume Challenge pro
     - used selective overrides on top of Bootstrap framework
 
 - [x]  4. Deploy Resume to Static Website with **AWS S3**
-    - utilized OAC origin access control to improve security by restricting access to CloudFront distribution
+    - utilized OAC (origin access control) to improve security by restricting access to CloudFront distribution
     - left public access blocked & static website feature disabled for compatibility with OAC
 
 - [x]  5. Use HTTPS Protocol with **AWS CloudFront**
@@ -44,6 +44,7 @@ Repo to track progress and document the outcome of my Cloud Resume Challenge pro
     - Boto3 SDK manages DynamoDB table, retrieving and updating value of view count record
     - function checks latest count from table, increments +1, and persists new value back to table
     - function returns JSON response to API, to deliver JSON resposne back to website
+    - `requirements.txt` file used to track module dependencies and versions for project
 
 - [x] 11. Perform **Tests** on Python Code
     - tests run on pytest framework, with lambda function imported locally to be tested
@@ -51,11 +52,16 @@ Repo to track progress and document the outcome of my Cloud Resume Challenge pro
     - os module used to pass environmental variables to utilize mock resources
     - requests module used to make calls to API URL endpoint 
 
-- [ ] 12. Configure Resources with **IaC Using an AWS SAM Template**
+- [x] 12. Configure Resources with **IaC Using Terraform**
+    - Terraform used to automatically provision and configure AWS Lambda, DynamoDB, and API Gateway
+    - Lambda Python code uploaded as .zip file using `archive_file` data source
 
-- [ ] 13. Utilize **Source Control** with GitHub
+- [x] 13. Utilize **Source Control** with GitHub
+    - all code related to website stored in a GitHub repository
+    - version control utilized to track changes and capture development over time
+    - `.gitignore` file used to avoid committing binary / superfluous files (e.g. .terraform and pycache directories) to remote repo
 
-- [ ] 14. Implement **Backend CI/CD** for SAM Template with GitHub Actions
+- [ ] 14. Implement **Backend CI/CD** for Terraform with GitHub Actions
 
 - [ ] 15. Implement **Frontend CI/CD** for Webpage Content with GitHub Actions
 
