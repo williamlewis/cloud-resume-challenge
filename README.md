@@ -55,6 +55,7 @@ Repo to track progress and document the outcome of my Cloud Resume Challenge pro
 - [x] 12. Configure Resources with **IaC Using Terraform**
     - Terraform used to automatically provision and configure AWS Lambda, DynamoDB, and API Gateway
     - Lambda Python code uploaded as .zip file using `archive_file` data source
+    - CORS enabled using [api-gateway-enable-cors](https://registry.terraform.io/modules/squidfunk/api-gateway-enable-cors/aws/latest) module by [Martin Donath]((https://github.com/squidfunk/terraform-aws-api-gateway-enable-cors))
 
 - [x] 13. Utilize **Source Control** with GitHub
     - all code related to website stored in a GitHub repository
