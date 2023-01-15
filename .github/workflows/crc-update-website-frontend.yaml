@@ -22,7 +22,7 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        role-to-assume: ${{ secrets.IAMROLE_GHACTIONS_CRC }} #arn:aws:iam::123456789100:role/my-github-actions-role
+        role-to-assume: ${{ secrets.IAMROLE_GHACTIONS_CRC }} # store ARN of IAM Role as a GH repo secret
         aws-region: us-east-1
     
     # sync bucket to latest repo files
