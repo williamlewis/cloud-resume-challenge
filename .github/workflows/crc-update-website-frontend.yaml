@@ -1,0 +1,32 @@
+# Update website front-end by syncing latest files to S3 bucket, then invalidating CloudFront cache
+name: Update Website Front-End
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  sync-s3-to-repo:
+    
+    permissions:
+      id-token: write # Allows job to connect to Id endpoint and receive token
+      contents: read # Specify read here if setting id-token to write; allows workflow to fetch repo content
+
+    runs-on: ubuntu-latest # Specify GitHub-hosted Linux runner (as opposed to self-hosted runner)
+
+    steps:
+    # Check out repo code
+    - uses: actions/checkout@v3
+
+    # Configure AWS credentials via GitHub OIDC provider (for short-lived credentials)
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: ${{ secrets.IAMROLE_GHACTIONS_CRC }} #arn:aws:iam::123456789100:role/my-github-actions-role
+        aws-region: us-east-1
+    
+    # sync bucket to latest repo files
+    - name: Sync S3 Bucket to Repo
+
+    # invalidate cloudfront distribution (clear cache)
+    - name: Invalidate CloudFront Cache
