@@ -27,7 +27,7 @@ jobs:
     
     # Sync S3 bucket to latest repo files
     - name: Sync S3 Bucket to Repo
-      run: aws s3 sync '../../01 - Website Front-End' s3://${{ secrets.AWS_CRC_BUCKET_NAME }} # CLI command:  aws s3 sync LOCAL_DIR s3://BUCKET_NAME
+      run: aws s3 sync './01 - Website Front-End' s3://${{ secrets.AWS_CRC_BUCKET_NAME }} # CLI command:  aws s3 sync LOCAL_DIR s3://BUCKET_NAME
 
     # Clear Cache of CloudFront Distribution
     # - name: Invalidate CloudFront Cache
