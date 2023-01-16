@@ -36,7 +36,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest
         if [ -f './02 - Website Back-End/requirements.txt' ]; then pip install -r './02 - Website Back-End/requirements.txt'; fi
-        sudo apt install zip
 
 
     # Lint Python Code  
@@ -62,11 +61,6 @@ jobs:
       run: |
         pytest './02 - Website Back-End/lambda_update_view_count_TEST.py'
     
-
-    # Build Lambda Function
-    - name: Build Lambda .ZIP Artifact
-      run: |
-        zip './02 - Website Back-End/gha_update_view_count' './02 - Website Back-End/lambda_update_view_count.py'
 
     # Run Terraform 'init'
 
