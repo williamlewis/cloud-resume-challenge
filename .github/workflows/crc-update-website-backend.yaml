@@ -50,7 +50,7 @@ jobs:
     # Run Unit Tests on Lambda Function
     - name: Test Lambda with pytest
       run: |
-        pytest '02 - Website Back-End/lambda_update_view_count_TEST.py'
+        pytest './02 - Website Back-End/lambda_update_view_count_TEST.py'
 
     
     # Build Lambda Function
