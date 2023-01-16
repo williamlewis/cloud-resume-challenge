@@ -73,4 +73,4 @@ jobs:
     # Run Integration Test on API Endpoint
     - name: Test API Gateway with pytest
       run: |
-        pytest api_gateway_check_enpoint_TEST.py
+        pytest './02 - Website Back-End/api_gateway_check_enpoint_TEST.py'
