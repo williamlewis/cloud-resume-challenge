@@ -77,6 +77,7 @@ jobs:
     # Run Terraform 'apply'
     - name: Apply Changes with Terraform
       run: |
+        cd './02 - Website Back-End'
         terraform apply --auto-approve
     
     # Run Integration Test on API Endpoint
