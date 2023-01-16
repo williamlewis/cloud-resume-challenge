@@ -1,7 +1,7 @@
 # Lambda function invoked by POST request to API Gateway URL endpoint via Javascript script
 # Reads current website view count from DynamoDB, increments count, then updates value in DynamoDB table before returning JSON response to API Gateway
 
-# Test comment9 for GitHub Actions
+# Test comment for GitHub Actions - redeploy with Terraform 7
 import boto3
 import json
 import os

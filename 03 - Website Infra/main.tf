@@ -21,7 +21,7 @@ provider "archive" {}
 
 data "archive_file" "zip" {
   type        = "zip"
-  source_file = "${path.module}./02 - Website Back-End/lambda_update_view_count_in_dynamodb.py"
+  source_file = "${path.module}./02 - Website Back-End/lambda_update_view_count.py"
   output_path = "${path.module}./02 - Website Back-End/update_view_count.zip"
 }
 
