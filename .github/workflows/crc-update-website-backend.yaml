@@ -1,5 +1,5 @@
 # Update website back-end by testing Lambda function code, building artifact (save as .ZIP), updating infrastructure (API Gateway > Lambda > DynamoDB) with Terraform
-name: Update Website Front-End
+name: Update Website Back-End
 
 on:
   push:
@@ -30,13 +30,14 @@ jobs:
         python-version: "3.9"
 
 
-    # Install Python Dependencies
-    - name: Install dependencies
+    # Install Python Dependencies & Zip
+    - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
         pip install flake8 pytest
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    
+        if [ -f './02 - Website Back-End/requirements.txt' ]; then pip install -r './02 - Website Back-End/requirements.txt'; fi
+        sudo apt install zip
+
 
     # Lint Python Code  
     - name: Lint with flake8
@@ -46,15 +47,6 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-    
-    # Run Unit Tests on Lambda Function
-    - name: Test Lambda with pytest
-      run: |
-        pytest lambda_update_view_count_TEST.py
-
-    
-    # Build Lambda Function
-
 
     # Configure AWS credentials via GitHub OIDC provider (for short-lived credentials)
     - name: Configure AWS Credentials
@@ -63,6 +55,18 @@ jobs:
         role-to-assume: ${{ secrets.IAMROLE_GHACTIONS_CRC }} # store ARN of IAM Role as a GH repo secret
         aws-region: us-east-1
 
+    
+    # Run Unit Tests on Lambda Function
+    - name: Test Lambda with pytest
+      shell: pwsh
+      run: |
+        pytest './02 - Website Back-End/lambda_update_view_count_TEST.py'
+    
+
+    # Build Lambda Function
+    - name: Build Lambda .ZIP Artifact
+      run: |
+        zip './02 - Website Back-End/gha_update_view_count' './02 - Website Back-End/lambda_update_view_count.py'
 
     # Run Terraform 'init'
 
@@ -73,4 +77,4 @@ jobs:
     # Run Integration Test on API Endpoint
     - name: Test API Gateway with pytest
       run: |
-        pytest api_gateway_check_enpoint_TEST.py
+        pytest './02 - Website Back-End/api_gateway_check_enpoint_TEST.py'
