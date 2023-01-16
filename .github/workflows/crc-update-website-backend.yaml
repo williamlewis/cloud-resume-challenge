@@ -1,5 +1,5 @@
 # Update website back-end by testing Lambda function code, building artifact (save as .ZIP), updating infrastructure (API Gateway > Lambda > DynamoDB) with Terraform
-name: Update Website Front-End
+name: Update Website Back-End
 
 on:
   push:
@@ -50,7 +50,7 @@ jobs:
     # Run Unit Tests on Lambda Function
     - name: Test Lambda with pytest
       run: |
-        pytest lambda_update_view_count_TEST.py
+        pytest '02 - Website Back-End/lambda_update_view_count_TEST.py'
 
     
     # Build Lambda Function
