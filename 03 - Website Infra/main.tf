@@ -9,6 +9,11 @@ terraform {
       version = "~> 2.2.0"
     }
   }
+  backend "s3" {
+    bucket = "wlewis-cloud-resume-challenge-terraform-state"
+    key    = "default-infrastructure"
+    region = "us-east-1"
+  }
 }
 
 
@@ -24,6 +29,41 @@ data "archive_file" "zip" {
   source_file = "${path.module}./02 - Website Back-End/lambda_update_view_count.py"
   output_path = "${path.module}./02 - Website Back-End/update_view_count.zip"
 }
+
+
+# ----------------------------------------------------------------
+# ////////       S3 - Remote Backend for State File       ////////
+# ----------------------------------------------------------------
+
+# Bucket
+resource "aws_s3_bucket" "tf_state_bucket" {
+  bucket = "wlewis-cloud-resume-challenge-terraform-state"
+}
+
+# Bucket Access Control List
+resource "aws_s3_bucket_acl" "tf_state_bucket_acl" {
+  bucket = aws_s3_bucket.tf_state_bucket.id
+  acl    = "private"
+}
+
+# Bucket Block Public Access
+resource "aws_s3_bucket_public_access_block" "tf_state_bucket_block_public_access" {
+  bucket = aws_s3_bucket.tf_state_bucket.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+# Bucket Versioning
+resource "aws_s3_bucket_versioning" "tf_state_bucket_versioning" {
+  bucket = aws_s3_bucket.tf_state_bucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
 
 # --------------------------------------
 # ////////       DynamoDB       ////////
@@ -114,12 +154,12 @@ resource "aws_lambda_function" "lambda-view-counter-function" {
   source_code_hash = data.archive_file.zip.output_base64sha256
 
   role    = aws_iam_role.iam_lambda_role.arn
-  handler = "lambda_update_view_count_in_dynamodb.lambda_handler"
+  handler = "lambda_update_view_count.lambda_handler"
   runtime = "python3.9"
 
   environment {
     variables = {
-      TABLE_NAME = aws_dynamodb_table.view-count-table.id # reference name of dynamodb table
+      TABLE_NAME = aws_dynamodb_table.view-count-table.id # Reference name of dynamodb table
     }
   }
 }
@@ -202,21 +242,19 @@ resource "aws_lambda_permission" "lambda-permission-to-api" {
   function_name = "lambda-view-counter-function"
   principal     = "apigateway.amazonaws.com"
 
-  # source_arn = "${aws_api_gateway_rest_api.api-to-lambda-view-count.execution_arn}/*/*/*" # the /*/*/* part allows invocation from any stage, method and resource path within API Gateway REST API.
-  # source_arn = "${aws_api_gateway_rest_api.api-to-lambda-view-count.execution_arn}/prod/POST/count" # hard-coded values work
   source_arn = "${aws_api_gateway_rest_api.api-to-lambda-view-count.execution_arn}/${aws_api_gateway_stage.api-stage.stage_name}/${aws_api_gateway_method.api-post-method.http_method}/${aws_api_gateway_resource.api-resource.path_part}"
 }
 
 
-# # --------------------------------------------------------------
-# # ////////       Enable CORS (API Gateway Cont'd)       ////////
-# # --------------------------------------------------------------
+# --------------------------------------------------------------
+# ////////       Enable CORS (API Gateway Cont'd)       ////////
+# --------------------------------------------------------------
 
 
 module "api-gateway-enable-cors" {
   source  = "squidfunk/api-gateway-enable-cors/aws"
   version = "0.3.3"
 
-  api_id          = aws_api_gateway_rest_api.api-to-lambda-view-count.id # "<api_id>"
-  api_resource_id = aws_api_gateway_resource.api-resource.id             # "<api_resource_id>"
+  api_id          = aws_api_gateway_rest_api.api-to-lambda-view-count.id
+  api_resource_id = aws_api_gateway_resource.api-resource.id
 }
