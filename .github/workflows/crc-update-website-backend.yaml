@@ -1,0 +1,76 @@
+# Update website back-end by testing Lambda function code, building artifact (save as .ZIP), updating infrastructure (API Gateway > Lambda > DynamoDB) with Terraform
+name: Update Website Front-End
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '02 - Website Back-End/**' # Files within back-end directory
+      - 'lambda_update_view_count.py' # ONLY Lambda function file
+
+jobs:
+  redeploy-lambda-function:
+    
+    permissions:
+      id-token: write # Allows job to connect to Id endpoint and receive token
+      contents: read # Specify read here if setting id-token to write; allows workflow to fetch repo content
+
+    runs-on: ubuntu-latest # Specify GitHub-hosted Linux runner (as opposed to self-hosted runner)
+
+    steps:
+    # Check out repo code
+    - uses: actions/checkout@v3
+
+
+    # Set Up Python 3.9
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.9"
+
+
+    # Install Python Dependencies
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    
+
+    # Lint Python Code  
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+    
+    # Run Unit Tests on Lambda Function
+    - name: Test Lambda with pytest
+      run: |
+        pytest lambda_update_view_count_TEST.py
+
+    
+    # Build Lambda Function
+
+
+    # Configure AWS credentials via GitHub OIDC provider (for short-lived credentials)
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: ${{ secrets.IAMROLE_GHACTIONS_CRC }} # store ARN of IAM Role as a GH repo secret
+        aws-region: us-east-1
+
+
+    # Run Terraform 'init'
+
+
+    # Run Terraform 'apply'
+    
+    
+    # Run Integration Test on API Endpoint
+    - name: Test API Gateway with pytest
+      run: |
+        pytest api_gateway_check_enpoint_TEST.py
