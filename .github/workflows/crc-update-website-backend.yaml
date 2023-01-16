@@ -46,6 +46,14 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
+
+    # Configure AWS credentials via GitHub OIDC provider (for short-lived credentials)
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: ${{ secrets.IAMROLE_GHACTIONS_CRC }} # store ARN of IAM Role as a GH repo secret
+        aws-region: us-east-1
+
     
     # Run Unit Tests on Lambda Function
     - name: Test Lambda with pytest
@@ -54,14 +62,6 @@ jobs:
         pytest './02 - Website Back-End/lambda_update_view_count_TEST.py'
     
     # Build Lambda Function
-
-
-    # Configure AWS credentials via GitHub OIDC provider (for short-lived credentials)
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        role-to-assume: ${{ secrets.IAMROLE_GHACTIONS_CRC }} # store ARN of IAM Role as a GH repo secret
-        aws-region: us-east-1
 
 
     # Run Terraform 'init'
