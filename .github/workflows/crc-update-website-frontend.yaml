@@ -3,7 +3,13 @@ name: Update Website Front-End
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+    paths:
+      - '01 - Website Front-End/**' # Files within front-end directory, of below listed file types
+      - '**.html'
+      - '**.css'
+      - '**.js'
 
 jobs:
   sync-s3-to-repo:
