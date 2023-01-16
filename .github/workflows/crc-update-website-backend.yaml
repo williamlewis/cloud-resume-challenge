@@ -62,11 +62,22 @@ jobs:
         pytest './02 - Website Back-End/lambda_update_view_count_TEST.py'
     
 
+    # Set Up Terraform
+    - name: Set Up Terraform
+      uses: hashicorp/setup-terraform@v2
+    
+    
     # Run Terraform 'init'
+    - name: Initialize Terraform
+      run: |
+        cd './02 - Website Back-End'
+        terraform init
 
 
     # Run Terraform 'apply'
-    
+    - name: Apply Changes with Terraform
+      run: |
+        terraform apply --auto-approve
     
     # Run Integration Test on API Endpoint
     - name: Test API Gateway with pytest
