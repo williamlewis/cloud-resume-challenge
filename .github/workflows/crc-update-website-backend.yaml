@@ -6,8 +6,7 @@ on:
     branches:
       - main
     paths:
-      - '02 - Website Back-End/**' # Files within back-end directory
-      - 'lambda_update_view_count.py' # ONLY Lambda function file
+      - '02 - Website Back-End/lambda_update_view_count.py' # ONLY Lambda function file
 
 jobs:
   redeploy-lambda-function:
