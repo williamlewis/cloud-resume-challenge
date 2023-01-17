@@ -21,17 +21,11 @@ def lambda_handler(event, context):
                 'count_id': 'total_views'
             }
         )
-    # If no table item found in DB, set to 1
+        previous_count = resp['Item']['current_count']
     except:
-        resp = {
-            'Item': {
-                'count_id': 'total_views',
-                'current_count': 1
-            }
-        }
-
+        previous_count = 1 # If no existing table item found in DB, set count to 1
+        
     # Increment count value up for current view
-    previous_count = resp['Item']['current_count']
     new_count = previous_count + 1
 
     # Update DB with new view count value
