@@ -6,7 +6,7 @@ import requests
 
 @pytest.fixture
 def api_endpoint():
-    endpoint_url = 'https://gqzq4elpqa.execute-api.us-east-1.amazonaws.com/Production/count'
+    endpoint_url = 'https://sm82gzbtzk.execute-api.us-east-1.amazonaws.com/prod/count'
     
     return endpoint_url
 
