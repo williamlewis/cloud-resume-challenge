@@ -15,11 +15,18 @@ def lambda_handler(event, context):
     table = dynamodb.Table(table_name)
 
     # Get current view count value from DB
-    resp = table.get_item(
-        Key={
-            'count_id': 'total_views'
+    try:
+        resp = table.get_item(
+            Key={
+                'count_id': 'total_views'
+            }
+        )
+    # If no table item found in DB, set to 1
+    except:
+        resp = {
+            'count_id': 'total_views',
+            'current_count': 1
         }
-    )
 
     # Increment count value up for current view
     previous_count = resp['Item']['current_count']
