@@ -24,8 +24,10 @@ def lambda_handler(event, context):
     # If no table item found in DB, set to 1
     except:
         resp = {
-            'count_id': 'total_views',
-            'current_count': 1
+            'Item': {
+                'count_id': 'total_views',
+                'current_count': 1
+            }
         }
 
     # Increment count value up for current view
