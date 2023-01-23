@@ -10,14 +10,20 @@ My website is built on AWS using S3, CloudFront, Route 53, Certificate Manager, 
 
 Infrastructure-as-Code is implemented using Terraform, while two CI/CD pipelines are triggered and executed using GitHub Actions.
 
+</br>
+
+View the site at [**william-lewis.com**](william-lewis.com)
+
 
 <img src="./website-architecture-diagram.svg" alt="Website Architecture Diagram" width="100%" height="56.25%">
 
 </br>
+</br>
+
+---
 
 ## Challenge Steps & Notes:
 
-Expand each toggle to see implementation details.
 
 - [x]  1. Earn an **AWS Certification**
     - passed Cloud Practitioner in September 2022, the Solutions Architect Associate in October 2022
@@ -93,3 +99,4 @@ Expand each toggle to see implementation details.
 
 - [ ] 16. Share Your Challenges and Learnings with a **Dev.to Blog Post**
     - (blog post in progress)
+
