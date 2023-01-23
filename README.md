@@ -53,8 +53,9 @@ Repo to track progress and document the outcome of my Cloud Resume Challenge pro
     - requests module used to make calls to API URL endpoint 
 
 - [x] 12. Configure Resources with **IaC Using Terraform**
-    - Terraform used to automatically provision and configure AWS Lambda, DynamoDB, and API Gateway
-    - Lambda Python code uploaded as .zip file using `archive_file` data source
+    - Terraform used to automatically provision and configure AWS Lambda, DynamoDB, API Gateway
+    - S3 bucket also provisioned to act as remote Terraform backend by hosting tf.state file
+    - Lambda Python code uploaded as .zip file artifact using `archive_file` data source
     - CORS enabled using [api-gateway-enable-cors](https://registry.terraform.io/modules/squidfunk/api-gateway-enable-cors/aws/latest) module by [Martin Donath]((https://github.com/squidfunk/terraform-aws-api-gateway-enable-cors))
 
 - [x] 13. Utilize **Source Control** with GitHub
@@ -62,9 +63,19 @@ Repo to track progress and document the outcome of my Cloud Resume Challenge pro
     - version control utilized to track changes and capture development over time
     - `.gitignore` file used to avoid committing binary / superfluous files (e.g. .terraform and pycache directories) to remote repo
 
-- [ ] 14. Implement **Backend CI/CD** for Terraform with GitHub Actions
+- [x] 14. Implement **Backend CI/CD** for Terraform with GitHub Actions
+    - event trigger defined when specific .py lambda function file is pushed to main branch
+    - workflow runs on GitHub-hosted Linux runner
+    - Python dependencies installed on runner per `requirements.txt` file using pip
+    - GitHub Actions configured as trusted identity provider with AWS, utilizing OpenID Connect token-based authentication for short-lived credentials
+    - ARN of GitHub Actions IAM Role passed into workflow file as an environmental variable using GitHub repository secrets
+    - unit tests run on new Lambda code, then Terraform changes applied, and finally integration test run on API endpoint
 
-- [ ] 15. Implement **Frontend CI/CD** for Webpage Content with GitHub Actions
+- [x] 15. Implement **Frontend CI/CD** for Webpage Content with GitHub Actions
+    - event trigger defined when any frontend files are included in a push to main branch
+    - S3 bucket is synchronized to GitHub repo to contain latest .HTML, .CSS, and .JS files
+    - Cache of CloudFront distribution is invalidated (cleared) to ensure latest frontend content is immediately available to website visitors
 
 - [ ] 16. Share Your Challenges and Learnings with a **Dev.to Blog Post**
+    - (blog post in progress)
 
