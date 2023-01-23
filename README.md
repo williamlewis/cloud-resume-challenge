@@ -12,7 +12,7 @@ Infrastructure-as-Code is implemented using Terraform, while two CI/CD pipelines
 
 </br>
 
-View the site at [**william-lewis.com**](william-lewis.com)
+View the site at [**william-lewis.com**](https://william-lewis.com)
 
 
 <img src="./website-architecture-diagram.svg" alt="Website Architecture Diagram" width="100%" height="56.25%">
