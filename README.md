@@ -2,7 +2,7 @@
 
 The [Cloud Resume Challenge](https://cloudresumechallenge.dev/docs/the-challenge/aws/) was created by [Forrest Brazeal](https://forrestbrazeal.com/) as a self-guided, hands-on project to incorporate a large range of skills used by DevOps Engineers and Cloud Developers.
 
-The challenge is designed to champion ***self-learning*** as it intentionally gives only high-level guidance on how to research, navigate, and implement core topics such as DNS, APIs, Testing, Infrastructure-as-Code, and CI/CD pipelines.
+The challenge is designed to champion *self-learning* as it intentionally gives only high-level guidance on how to research, navigate, and implement core topics such as DNS, APIs, Testing, Infrastructure-as-Code, and CI/CD pipelines.
 
 </br>
 
@@ -12,7 +12,9 @@ Infrastructure-as-Code is implemented using Terraform, while two CI/CD pipelines
 
 </br>
 
-View the site at [**william-lewis.com**](https://william-lewis.com)
+View the site at [**william-lewis.com**](https://william-lewis.com).
+
+Check out my article about completing the project here:  [**The Cloud Resume Challenge:  My DevOps Journey from Building Technology to the Cloud**](https://www.linkedin.com/pulse/cloud-resume-challenge-my-devops-journey-from-building-william-lewis)
 
 
 <img src="./website-architecture-diagram.svg" alt="Website Architecture Diagram" width="100%" height="56.25%">
@@ -97,6 +99,6 @@ View the site at [**william-lewis.com**](https://william-lewis.com)
     - S3 bucket is synchronized to GitHub repo to contain latest .HTML, .CSS, and .JS files
     - Cache of CloudFront distribution is invalidated (cleared) to ensure latest frontend content is immediately available to website visitors
 
-- [ ] 16. Share Your Challenges and Learnings with a **Dev.to Blog Post**
-    - (blog post in progress)
+- [x] 16. Share Your Challenges and Learnings with a **Blog Post**
+    - article published on LinkedIn
 
