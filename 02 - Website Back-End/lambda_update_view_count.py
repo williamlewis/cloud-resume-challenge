@@ -41,7 +41,7 @@ def lambda_handler(event, context):
         'statusCode': 200,
         'headers': {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
+            'Access-Control-Allow-Origin': '*' # Necessary for CORS
         },
         'body': json.dumps({'total_views': str(new_count)})
     }
